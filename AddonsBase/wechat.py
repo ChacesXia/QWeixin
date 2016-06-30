@@ -20,7 +20,10 @@ def getdata(body):
 	data = data['xml']
 	temp = {}
 	for x in data.keys():
-		temp[x] = data[x]['#text']
+		try:
+			temp[x] = data[x]['#text']
+		except Exception as  e:
+			continue
 	return temp
 
 def reply_text(data):
