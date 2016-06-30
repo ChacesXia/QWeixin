@@ -3,6 +3,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt 
 from Home.models import WeixinInfo
+from .wechat import reply_main
 import time
 import hashlib 
 # Create your views here.
@@ -11,7 +12,8 @@ def index(request,id):
 		response =   HttpResponse(checkSignature(request,id), content_type="text/plain")
 		return response
 	else:
-		return HttpResponse('hi')
+		return HttpResponse(reply_main(request.body,id))
+
 def checkSignature(request,id):
 	weixindata = WeixinInfo.objects.get(id = id)
 	signature = request.GET.get("signature", None)
@@ -27,3 +29,14 @@ def checkSignature(request,id):
 		return echoStr
 	else:
 		return None
+
+def reply_text(data):
+	 extTpl = '''<xml>
+	 <ToUserName><![CDATA[%s]]></ToUserName>
+	 <FromUserName><![CDATA[%s]]></FromUserName>
+	 <CreateTime>%s</CreateTime>
+	 <MsgType><![CDATA[%s]]></MsgType>
+	 <Content><![CDATA[%s]]></Content>
+	 </xml>'''
+	 extTpl = extTpl %(data['ToUserName'],data['FromUserName'],str(int(time.time())),'text',data['Content'])
+	 return extTpl
