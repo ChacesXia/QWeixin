@@ -11,7 +11,7 @@ def index(request,id):
 		response =   HttpResponse(checkSignature(request,id), content_type="text/plain")
 		return response
 	else:
-		return HttpResponse('hi' content_type="text/plain")
+		return HttpResponse('hi',content_type="text/plain")
 def checkSignature(request,id):
 	weixindata = WeixinInfo.objects.get(id = id)
 	signature = request.GET.get("signature", None)
