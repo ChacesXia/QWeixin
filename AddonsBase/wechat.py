@@ -7,7 +7,7 @@ def reply_main(data,id):
 	reply =  {}
 	reply['ToUserName'] = data['FromUserName']
 	reply['FromUserName'] = data['ToUserName']
-	reply['Content'] = data['Content']
+	reply['Content'] = 'get a request with' + data['MsgType']
 	return reply_text(reply)
 def getdata(body):
 	body = body.decode(encoding = 'utf-8')
@@ -19,12 +19,8 @@ def getdata(body):
 		return None
 	data = data['xml']
 	temp = {}
-	temp['ToUserName'] = data['ToUserName']['#text']
-	temp['FromUserName'] = data['FromUserName']['#text']
-	temp['CreateTime'] = data['CreateTime']['#text']
-	temp['Content'] = data['Content']['#text']
-	temp['MsgId'] = data['MsgId']['#text']
-	temp['MsgType'] = data['MsgType']['#text']
+	for x in data.keys():
+		temp[x] = data[x]['#text']
 	return temp
 
 def reply_text(data):
