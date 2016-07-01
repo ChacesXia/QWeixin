@@ -6,8 +6,8 @@ type_choices = (
 	('1','精确'),
 	)
 status_choices = (
-	('0','关闭'),
-	('1','开启'),
+	('0','模糊'),
+	('1','精确'),
 	)
 class Addon(models.Model):
 	name = models.CharField('标识',max_length = 200)

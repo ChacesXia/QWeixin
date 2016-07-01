@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.conf import settings
+
 # Create your models here.
 class User(models.Model):
 	username  = models.CharField('用户名',max_length =  100)
@@ -30,8 +30,8 @@ class WeixinInfo(models.Model):
 	def __str__(self):
 		return self.name
 	def getcheckurl(self):
-		return settings.HOST+reverse('windex',args = (self.id,))
-	getcheckurl.short_description = '接口地址'
+		return reverse('windex',args = (self.id,))
+	getcheckurl.short_description = ''
 
 
 

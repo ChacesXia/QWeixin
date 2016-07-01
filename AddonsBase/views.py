@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.template import RequestContext 
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt 
 from Home.models import WeixinInfo
 from .wechat import reply_main
 import time
@@ -9,7 +8,10 @@ import hashlib
 # Create your views here.
 def index(request,id):
 	if(request.method == 'GET'):
-		response =   HttpResponse(checkSignature(request,id), content_type="text/plain")
+		try:
+			response =   HttpResponse(checkSignature(request,id), content_type="text/plain")
+		except Exception as e:
+			return HttpResponse('Request failed')
 		return response
 	else:
 		return HttpResponse(reply_main(request,request.body,id))
