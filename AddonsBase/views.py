@@ -12,7 +12,7 @@ def index(request,id):
 		response =   HttpResponse(checkSignature(request,id), content_type="text/plain")
 		return response
 	else:
-		return HttpResponse(reply_main(request.body,id))
+		return HttpResponse(reply_main(request,request.body,id))
 
 def checkSignature(request,id):
 	weixindata = WeixinInfo.objects.get(id = id)
@@ -30,13 +30,3 @@ def checkSignature(request,id):
 	else:
 		return None
 
-def reply_text(data):
-	 extTpl = '''<xml>
-	 <ToUserName><![CDATA[%s]]></ToUserName>
-	 <FromUserName><![CDATA[%s]]></FromUserName>
-	 <CreateTime>%s</CreateTime>
-	 <MsgType><![CDATA[%s]]></MsgType>
-	 <Content><![CDATA[%s]]></Content>
-	 </xml>'''
-	 extTpl = extTpl %(data['ToUserName'],data['FromUserName'],str(int(time.time())),'text',data['Content'])
-	 return extTpl

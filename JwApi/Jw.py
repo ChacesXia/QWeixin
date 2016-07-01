@@ -76,12 +76,9 @@ def opensite(url, postdata, refer=""):
         d = d.decode(char, "ignore")
         return d
     except Exception as e:
-        output.write(string(e))
-        return "err"
-
+        output.write(e)
 
 class OucJw:
-
     def __init__(self, username, password):
         self.xn = 2015
         self.xq = 2
