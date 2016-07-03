@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'WeixinManage',
     'Home',
     'AddonsBase',
-    'AddonOucJw'
+    'AddonOucJw',
+    'gunicorn'
 ]
 
 MIDDLEWARE_CLASSES = [

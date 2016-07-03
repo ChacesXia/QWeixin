@@ -1,6 +1,9 @@
 from Jw import *
 import pymysql
-
+from email.header import Header
+from email.mime.text import MIMEText
+import smtplib
+output = open('oucjw.txt', 'a+')
 conn = pymysql.connect(host="localhost", user="root",
                        passwd="root", db="QWeixin", charset="utf8")
 cursor = conn.cursor()
@@ -62,8 +65,25 @@ def dict_2_str_and(dictin):
     return ' and '.join(tmplist)
 def safe(s):
 	return s
+
+def send(m,c):
+	from_addr = 'xmxj@cj.it592.com'
+	password = '07070913zyll'
+	to_addr = m
+	smtp_server = "smtpdm.aliyun.com"
+
+	msg = MIMEText(c, 'plain', 'utf-8')
+	msg['From'] = from_addr
+	msg['To'] = to_addr
+	msg['Subject'] = Header(u'虾米小匠成绩更新通知', 'utf-8').encode()
+
+	server = smtplib.SMTP(smtp_server, 25)
+	server.set_debuglevel(1)
+	server.login(from_addr, password)
+	server.sendmail(from_addr, [to_addr], msg.as_string())
+	server.quit()
 def getUser():
-	sql = getData('AddonOucJw_studentinfo',['id','username','password'],0)
+	sql = getData('AddonOucJw_studentinfo',['id','username','password','mail'],0)
 	cursor.execute(sql)
 	data = []
 	for x in cursor:
@@ -79,21 +99,31 @@ def getScore(user):
 		data.append(x)
 	return data
 def main():
+	ISOTIMEFORMAT='%Y-%m-%d %X'
+	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'begin\n')
 	userdata = getUser()
 	for x in userdata:
 		oucjw = OucJw(x[1],x[2])
 		t = (oucjw.login())
 		if(t['status'] == '200'):
-			data = oucjw.getCurrentCourseData()
+			data = oucjw.getScoreData()
+			td = getScore(x[0])
+			if len(data) == len(td):
+				continue
+			for v in td:
+				del data[v[0]+v[1]]
+			content = ''
 			for (k,v) in data.items():
-				temp = {'username_id':x[0],'coursename':v['coursename'],'xkh':v['xkh'],
-				'xkb':v['xkb'],'year':v['year'],'xf':v['xf'],'teacher':v['teacher']}
-				sql = insertData('AddonOucJw_studentcourse',temp)
+				temp = {'username_id':x[0],'coursename':v['coursename'],'coursetype':v['coursetype'],'year':v['year'],'jd':v['jd'],'score':v['score'],'xf':v['xf']}
+				sql = insertData('AddonOucJw_studentscore',temp)
+				content += v['coursename'] + v['score'] + ';\n'
 				try:
 					cursor.execute(sql)
 					conn.commit()
-					print(sql)
 				except Exception as e:
-					print('error')
+					print(e)
+			if len(data):
+				send('2943200389@qq.com',content)
+	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'end\n')
 
 main()

@@ -118,6 +118,10 @@ def getRecentCourse(request,id):
 		result = oucjw.login()
 		if(result['status'] == '200'):
 			data = oucjw.getCurrentCourseData()
+			td = StudentCourse.objects.filter(username = username)
+			if len(data) == len(td):
+				result = {'status':'200','message':'课程更新成功','data':data}
+				return HttpResponse(json.dumps(result),content_type="application/json")
 			for v,x in data.items():
 				d = StudentCourse(username = username,coursename = x['coursename'],
 					xkh = x['xkh'],xkb =x['xkb'],year=x['year'],xf=x['xf'],teacher=x['teacher'])
