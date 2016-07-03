@@ -3,7 +3,6 @@ import pymysql
 from email.header import Header
 from email.mime.text import MIMEText
 import smtplib
-output = open('oucjw.txt', 'a+')
 conn = pymysql.connect(host="localhost", user="root",
                        passwd="root", db="QWeixin", charset="utf8")
 cursor = conn.cursor()
@@ -100,7 +99,9 @@ def getScore(user):
 	return data
 def main():
 	ISOTIMEFORMAT='%Y-%m-%d %X'
+	output = open('oucjw.txt', 'a+')
 	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'begin\n')
+	output.close()
 	userdata = getUser()
 	for x in userdata:
 		oucjw = OucJw(x[1],x[2])
@@ -123,7 +124,9 @@ def main():
 				except Exception as e:
 					print(e)
 			if len(data):
-				send('2943200389@qq.com',content)
+				send(x[3],content)
+	output = open('oucjw.txt', 'a+')
 	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'end\n')
+	output.close()
 
 main()
