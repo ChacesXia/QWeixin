@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'WeixinManage',
     'Home',
-    'AddonsBase'
+    'AddonsBase',
+    'AddonOucJw'
 ]
 
 MIDDLEWARE_CLASSES = [

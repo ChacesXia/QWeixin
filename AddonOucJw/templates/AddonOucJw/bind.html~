@@ -1,0 +1,143 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>教务绑定----虾米小匠</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+    <link rel="stylesheet" href="http://m.sui.taobao.org/assets/css/demos.css">
+  </head>
+  <body>
+    <div class="page-group">
+        <div class="page page-current">
+          <header class="bar bar-nav">
+    <h1 class="title">账号绑定</h1>
+  </header>
+        <div class="content">
+            <div class="list-block">
+                <ul>
+                    <li>
+                        <div class="item-content">
+                        <div class="item-media"><i class="icon icon-form-name"></i></div>
+                        <div class="item-inner">
+                            <div class="item-title label">学号</div>
+                            <div class="item-input">
+                                <input type="text" placeholder="学号" name="id"/>
+                            </div>
+                        </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-password"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title label">密码</div>
+                                <div class="item-input">
+                                    <input type="password" placeholder="教务密码" name="passwd"/>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-email"></i> </div>
+                            <div class="item-inner">
+                                <div class="item-title label">邮箱</div>
+                                <div class="item-input">
+                                    <input type="email" placeholder="邮箱地址" name="email"/>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="item-content">
+                            <div class="item-media"><i class="icon icon-form-toggle"></i></div>
+                            <div class="item-inner">
+                                <div class="item-title label">保存密码</div>
+                                <div class="item-input">
+                                    <label class="label-switch">
+                                        <input type="checkbox" name="save">
+                                        <div class="checkbox"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">使用协议：</div>
+                <div class="card-content">
+                    <div class="card-content-inner">1.绑定系统之后，虾米小匠会将您的信息与系统进行绑定，提供相应的服务<br/>
+                    2.请不要非法使用他人账号</div>
+                </div>
+            </div>
+            <div class="content-block">
+                <div class="row">
+                    <div class="col-50"><a href="#" class="button button-big button-fill button-danger" onclick="">取消</a></div>
+                    <div class="col-50"><a href="#" class="button button-big button-fill button-success" onclick="submit()">提交</a></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+    <script type="text/javascript" src="{% static 'js/md5.js' %}" > </script>
+<script type="text/javascript">
+    function  submit(){
+        $.showPreloader('密码确认中，请稍等')
+       id =  $("input[name=id]").val();
+       passwd  = $("input[name=passwd]").val();
+       mail = $("input[name=email]").val();
+       randnumber = "";
+        $.post("{% url 'oucjwbind' openid %}",{
+            u1:id,
+            u2:hex_md5(hex_md5(passwd)+hex_md5(randnumber.toLowerCase())),
+            u4:mail,
+            openid:"{{ openid }}"
+        }, function (data,status) {
+            if(status=="timeout")
+            {
+                $.hidePreloader();
+                $.alert("网络有点小问题")
+            }
+            else {
+                data = eval(data);
+                $.hidePreloader();
+                if(data.status!="200")
+                {
+                    $.alert(data.message);
+                }
+                else{
+                    $.showPreloader("更新成绩中");
+                           $.post("{% url 'oucjwbind' openid %}",{
+            openid:"{{ openid }}"
+        }, function (data,status) {
+        	                       $.hidePreloader();
+        	                       data = eval(data)
+                        $.alert(data.message);
+        });
+                }
+            }
+        })
+    }
+    function updateScore()
+    {
+
+    }
+    function updateCourse()
+    {
+
+    }
+</script>
+
+  </body>
+</html>

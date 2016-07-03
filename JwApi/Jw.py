@@ -93,14 +93,24 @@ class OucJw:
         urllib.request.install_opener(self.opener)
 
     def login(self):
+        username = '13020031080'
+        password = 'f01df23e7aee0050cd929fbf0f508d27'
+        s = (username + ";;").encode(encoding="gbk")
+        encode_username = base64.b64encode(s)
+        postdata = {'_p': password, '_u': encode_username}
+        url = self.url + "cas/logon.action"
+        data = opensite(url, postdata)
+        data = json.loads(data)
+        return data
+
+    def yz(self):
         s = (self.username + ";;").encode(encoding="gbk")
         encode_username = base64.b64encode(s)
         postdata = {'_p': self.password, '_u': encode_username}
         url = self.url + "cas/logon.action"
         data = opensite(url, postdata)
         data = json.loads(data)
-        print(type(data))
-        return data
+        return data    
 
     def get_user_info(self):
         url = self.url + "STU_BaseInfoAction.do"
@@ -115,7 +125,7 @@ class OucJw:
         temp['dept'] = deal_xml(data, 'zymc')
         temp['btime'] = deal_xml(data, 'rxnj')
 
-    def get_score_data(self):
+    def getScoreData(self):
         url = self.url + "student/xscj.stuckcj_data.jsp"
         refer = self.url + "student/xscj.stuckcj.jsp?menucode=JW130705"
         postdata = {'xn': now_xn, 'xq': now_xq, 'ysyx': 'yscj', 'sjxz': 'sjxz1',
@@ -142,13 +152,13 @@ class OucJw:
                 continue
             temp = {}
             temp['username'] = self.username
-            temp['xn'] = temp_xn
-            temp['xq'] = temp_xq
-            temp['course_name'] = x[1]
-            temp['credit'] = float(x[2])
+            temp['year'] = str(temp_xn) + str(temp_xq)
+            temp['coursename'] = x[1]
+            temp['xf'] = float(x[2])
             temp['jd'] = self.cal_gpa(x[6])
-            temp['score1'] = x[6]
-            dataset[x[1]]  = temp;
+            temp['score'] = x[6]
+            temp['coursetype'] = x[3]
+            dataset[x[1]+str(temp_xn) + str(temp_xq)]  = temp;
         return dataset 
 
     def cal_gpa(self, str):
@@ -200,13 +210,13 @@ class OucJw:
             del(data[0])
         for x in data:
             temp = {}
-            temp['Id'] = x[0]
-            temp['xn'] = self.xn
-            temp['xq'] = self.xq
-            temp['course_name'] = x[1]
+            temp['xkh'] = x[0]
+            temp['year'] = self.xn + self.xq
+            temp['coursename'] = x[1]
             temp['xkb'] = x[8]
             temp['xf'] = x[3]
             temp['cx'] = x[4]
+            temp['teacher'] = x[5]
             temp['kch'] = x[13]
             temp['username'] = self.username
             dataset[x[0]] = temp;

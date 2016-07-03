@@ -1,5 +1,7 @@
 from xmltodict import parse
 from django.http import HttpResponse
+from .models import Addon,Keyword
+from AddonOucJw.views import *
 import json
 import time
 msgdata = {}
@@ -16,18 +18,30 @@ def reply_main(request,data,id):
 		return replymsg(request)
 	elif msgdata['MsgType'] == 'voice':
 		if 'Recognition' in msgdata.keys():
-			return reply(request)
+			return replymsg(request)
 		else:
 			reply['Content'] = 'I receive the ' + msgdata['keyword']
 			return reply_text(reply)
 	else:
 		reply['Content'] = 'I receive the ' + msgdata['keyword']
-		return reply_text(reply)
+		return (reply)
 
 def replymsg(request):
 	reply = {}
-	reply['Content'] = 'I receive the ' + keyword
-	return reply_text(reply)	
+	#get the addon from keyword
+	addon_name = None
+	addon = Keyword.objects.filter(keyword__exact = keyword) # exact
+	if len(addon) == 0:# not keyworw
+		addon = Keyword.objects.filter(type__exact = '0').filter(keyword__icontains =keyword)
+	if len(addon) != 0:
+		addon_name = addon[0].addon.name
+	if addon_name == 'oucjw':
+		reply = oucjwmain(request,msgdata)
+		if(reply['type'] == 'text'):
+			return reply_text(reply)
+	else:
+		return '2'
+
 
 def getdata(body):
 	body = body.decode(encoding = 'utf-8')
@@ -63,6 +77,7 @@ def getdata(body):
 	openid = temp['FromUserName']
 	token = temp['ToUserName']
 	return temp
+	
 def reply_text(data):
 	 extTpl = '''<xml><ToUserName><![CDATA[%s]]></ToUserName><FromUserName><![CDATA[%s]]></FromUserName>
 	 <CreateTime>%s</CreateTime>

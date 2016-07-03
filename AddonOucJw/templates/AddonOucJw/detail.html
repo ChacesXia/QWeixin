@@ -1,0 +1,60 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>成绩查询----虾米小匠</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+  </head>
+  <body>
+    <div class="page-group">
+        <div class="page page-current">
+        <header class="bar bar-nav">
+  <button class="button pull-left">
+    按钮
+  </button>
+  <button class="button pull-right">
+    按钮
+  </button>
+  <h1 class="title">标题</h1>
+</header>
+  <div class="content">
+  <div class="list-block cards-list">
+      <ul>
+        <li class="card">
+          <div class="card-header">成绩详情</div>
+          <div class="card-content">
+            <div class="card-content-inner">已修学分:{{data.all.total}}&nbsp / 加权平均分:{{data.all.jq}} </br>
+            绩点:{{data.all.jd}}&nbsp / 已学科目:{{data.all.km}} &nbsp / 挂科:{{data.all.gk}}次           
+            </div>
+          </div>
+        </li>
+        {% for x,choice in data.xqdata.items() %}
+         <li class="card">
+          <div class="card-header">x</div>
+          <div class="card-content">
+            <div class="card-content-inner">卡内容</div>
+          </div>
+          <div class="card-footer">卡脚</div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    </div>
+        </div>
+    </div>
+
+    <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+	 <script type="text/javascript" >
+	 
+	 </script>
+  </body>
+</html>
