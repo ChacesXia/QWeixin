@@ -109,7 +109,23 @@ def updateScore(request,id):
 	except Exception as e:
 		return HttpResponse(error(),content_type="application/json")
 
-
+def getRecentCourse(request,id):
+	global openid,username
+	openid = id
+	try:
+		username = StudentInfo.objects.get(openid = openid)
+		oucjw = OucJw(username.username,username.password)
+		result = oucjw.login()
+		if(result['status'] == '200'):
+			data = oucjw.getCurrentCourseData()
+			for v,x in data.items():
+				d = StudentCourse(username = username,coursename = x['coursename'],
+					xkh = x['xkh'],xkb =x['xkb'],year=x['year'],xf=x['xf'],teacher=x['teacher'])
+				d.save()
+			result = {'status':'200','message':'课程更新成功','data':data}
+			return HttpResponse(json.dumps(result),content_type="application/json")
+	except Exception as e:
+		HttpResponse(error(),content_type="application/json")
 def detail(request,id):
 	global openid
 	openid = request.POST.get('openid')

@@ -118,13 +118,13 @@
                 }
                 else{
                     $.showPreloader("更新成绩中");
-                           $.post("{% url 'oucjwupdate' openid %}",{
-            openid:"{{ openid }}"
-        }, function (data,status) {
-        	                       $.hidePreloader();
-        	                       data = eval(data)
-                        $.alert(data.message);
-                        window.location = "{% url 'oucjwindex' openid %}"
+                    $.post("{% url 'oucjwupdatec' openid %}",{openid:"{{ openid }}"}, function (data,status) {
+                      $.post("{% url 'oucjwupdate' openid %}",{openid:"{{ openid }}"}, function (data,status) {
+                                   $.hidePreloader();
+                                   data = eval(data)
+                                    $.alert(data.message);
+                                    window.location = "{% url 'oucjwindex' openid %}"
+        });
         });
                 }
             }
