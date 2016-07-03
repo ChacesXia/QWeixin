@@ -29,7 +29,7 @@ def oucjwmain(request,data):
 			username = d
 		except Exception as e: # not bind jw
 			reply['type'] = 'text'
-			reply['Content'] = "您还没绑定</br><a href ='" + settings.HOST+reverse('oucjwbind',args = (openid,))+"'>点我绑定教务系统</a>" 
+			reply['Content'] = "您还没绑定<br><a href ='" + settings.HOST+reverse('oucjwbind',args = (openid,))+"'>点我绑定教务系统</a>" 
 			return reply
 		try:
 			return updateScore()
