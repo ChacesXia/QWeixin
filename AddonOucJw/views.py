@@ -32,9 +32,18 @@ def oucjwmain(request,data):
 			reply['Content'] = "您还没绑定!\n<a href ='" + settings.HOST+reverse('oucjwbind',args = (openid,))+"'>点我绑定教务系统</a>" 
 			return reply
 		try:
-			return updateScore()
+			data = getScoreData()
+			reply['type'] = 'text'
+			content = '本学年成绩如下:\n'
+			for x in data:
+				content += fun(x['coursename']) + ' ' + x['score']+'\n'
+			content += "\n<a href ='" + settings.HOST+reverse('oucjwindex',args = (openid,))+"'>更多详情</a>" 
+			reply['Content'] = content
+			return reply
 		except Exception as e:
-			return 1
+			reply['type'] = 'text'
+			reply['Content'] = e
+			return reply
 
 def  index(request,id):
 	global openid,username
@@ -160,15 +169,15 @@ def getScoreInfo():
 	return (data)
 
 def getScoreData(year = ''):
-	if(year == ''):
-		d = StudentScore.objects.filter(Q(username = username) 
-			&(Q(year = 20151) | Q(year = 20152)))
+	if year == '':
+		d = StudentScore.objects.filter(Q(username = username) &((Q(year = 20151) | Q(year = 20152)))).order_by('year')
 	else:
 		d = StudentScore.objects.filter(Q(username  = username) & Q(year = year))
 	data = []
 	temp = {}
 	for x in d:
-		temp['coursename'] = x.coursename
+		temp = {}
+		temp['coursename'] = fun(x.coursename)
 		temp['coursetype'] = x.coursetype
 		temp['year'] = x.year
 		temp['score'] = x.score
