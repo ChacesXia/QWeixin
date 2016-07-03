@@ -124,4 +124,4 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-HOST ='http://bio.it592.com'
+HOST ='http://101.200.131.184'

@@ -124,6 +124,7 @@
         	                       $.hidePreloader();
         	                       data = eval(data)
                         $.alert(data.message);
+                        window.location = "{% url 'oucjwindex' openid %}"
         });
                 }
             }

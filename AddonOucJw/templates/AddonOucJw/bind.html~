@@ -118,7 +118,7 @@
                 }
                 else{
                     $.showPreloader("更新成绩中");
-                           $.post("{% url 'oucjwbind' openid %}",{
+                           $.post("{% url 'oucjwupdate' openid %}",{
             openid:"{{ openid }}"
         }, function (data,status) {
         	                       $.hidePreloader();
