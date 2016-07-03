@@ -18,33 +18,7 @@ timeout = 30
 now_xn = 2015
 now_xq = 2
 socket.setdefaulttimeout(timeout)
-
-conn = pymysql.connect(host="localhost", user="root",
-                       passwd="root", db="QWeixin", charset="utf8")
-cursor = conn.cursor()
 output = open('log.txt', 'a+')
-
-def insertData(tablename, data):
-    key = []
-    val = []
-    for k, v in data.items():
-        key.append(k)
-        val.append("'" + str(v) + "'")
-    key1 = ",".join(key)
-    val1 = ",".join(val)
-    sql = "insert into " + tablename + "(" + key1 + ") values (" + val1 + ")"
-    return sql
-
-
-def updateData(tablename, data, condition):
-    val = []
-    for i in range(len(data)):
-        val.append(data.keys()[i] + "='" + str(data.values()[i]) + "'")
-    val1 = ",".join(val)
-    sql = "update " + tablename + " set " + val1 + " where " + condition
-    return sql
-
-
 def deal_table(soup):  # return list which contain all table
     temp = []
     map = []
@@ -76,7 +50,7 @@ def opensite(url, postdata, refer=""):
         d = d.decode(char, "ignore")
         return d
     except Exception as e:
-        output.write(e)
+        output.write(str(e))
 
 class OucJw:
     def __init__(self, username, password):
@@ -211,7 +185,7 @@ class OucJw:
         for x in data:
             temp = {}
             temp['xkh'] = x[0]
-            temp['year'] = self.xn + self.xq
+            temp['year'] = str(self.xn) + str(self.xq)
             temp['coursename'] = x[1]
             temp['xkb'] = x[8]
             temp['xf'] = x[3]
