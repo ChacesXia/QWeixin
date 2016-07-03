@@ -10,7 +10,7 @@ def home_page(x):
 def index(request):
 	  oucjw = OucJw('13020031081', 'f01df23e7aee0050cd929fbf0f508d27');
 	  oucjw.login()
-	  return HttpResponse(json.dumps(oucjw.getCurrentCourseData()), content_type="application/json")  
+	  return HttpResponse('index', content_type="application/json")  
 def test(request):
 	  return mHttpResponse("Hello, world. You're at the WeixinManage test")
 def detail(request, question_id):
