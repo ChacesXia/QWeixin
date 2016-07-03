@@ -53,7 +53,7 @@ def  index(request,id):
 		d = StudentInfo.objects.get(openid = openid)
 		username = d
 	except Exception as e:
-		return HttpResponse(error())	
+		return redirect(reverse('oucjwbind', args=[openid,]))
 	if(request.method == 'GET'):
 		context = {'openid':openid}
 		data = getScoreInfo()
