@@ -24,7 +24,7 @@ def reply_main(request,data,id):
 			return reply_text(reply)
 	else:
 		reply['Content'] = 'I receive the ' + msgdata['keyword']
-		return (reply)
+		return reply_text(reply)
 
 def replymsg(request):
 	reply = {}
@@ -40,7 +40,7 @@ def replymsg(request):
 		if(reply['type'] == 'text'):
 			return reply_text(reply)
 	else:
-		return '2'
+		return ''
 
 
 def getdata(body):
