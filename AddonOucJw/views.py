@@ -42,8 +42,20 @@ def oucjwmain(request,data):
 			return reply
 		except Exception as e:
 			reply['type'] = 'text'
-			reply['Content'] = e
+			reply['Content'] = '程序开小差啦!稍后再试'
 			return reply
+	if keyword == '解绑':
+		try:
+			d = StudentInfo.objects.get(openid = openid)
+			d.delete()
+			reply['type'] = 'text'
+			reply['Content'] = '解绑成功'
+			return reply
+		except Exception as e:
+			reply['type'] = 'text'
+			reply['Content'] = '程序开小差啦!稍后再试'
+			return reply
+
 
 def  index(request,id):
 	global openid,username
@@ -141,6 +153,8 @@ def getScoreInfo():
 	xqdata = []
 	tempyear = ''
 	totalxf = 0;totaljd = 0;count = 0;total  = 0;totalxf1 = 0;gk =0;jdxf = 0
+	temp = None
+	xq = None
 	for x in d:
 		if tempyear == '':
 			tempyear = x.year
@@ -183,8 +197,16 @@ def getScoreInfo():
 		except Exception as e:
 			continue
 	xqdata.append({xq:temp})
-	#xqdata = sorted(xqdata.items(), key=lambda d:d[0]) 
-	all = {'gk':gk,'total':totalxf,'jd':round(totaljd/jdxf,2),'km':count,'jq':round(total / totalxf1,2)}
+	#xqdata = sorted(xqdata.items(), key=lambda d:d[0])
+	try:
+		all = {'gk':gk,'total':totalxf,'jd':round(totaljd/jdxf,2),'km':count,'jq':round(total / totalxf1,2)}
+	except Exception as e:
+		if jdxf == 0 and totalxf1 == 0:
+			all = {'gk':gk,'total':totalxf,'jd':0,'km':count,'jq':0}
+		elif jdxf == 0:
+			all = {'gk':gk,'total':totalxf,'jd':0,'km':count,'jq':round(total / totalxf1,2)}
+		else:
+			all = {'gk':gk,'total':totalxf,'jd':round(totaljd/jdxf,2),'km':count,'jq':0}
 	data = {'status':'200','all':all,'xqdata':xqdata}
 	return (data)
 

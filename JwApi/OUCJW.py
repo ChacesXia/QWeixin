@@ -3,6 +3,7 @@ import pymysql
 from email.header import Header
 from email.mime.text import MIMEText
 import smtplib
+cursor = None
 conn = pymysql.connect(host="localhost", user="root",
                        passwd="root", db="QWeixin", charset="utf8")
 def insertData(tablename, data):
@@ -96,11 +97,14 @@ def getScore(user):
 	for x in cursor:
 		data.append(x)
 	return data
+
 def main():
 	ISOTIMEFORMAT='%Y-%m-%d %X'
 	output = open('oucjw.txt', 'a+')
 	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'begin\n')
 	output.close()
+	global cursor
+	cursor = conn.cursor()
 	userdata = getUser()
 	global cursor
 	for x in userdata:
