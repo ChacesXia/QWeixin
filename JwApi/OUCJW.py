@@ -5,7 +5,6 @@ from email.mime.text import MIMEText
 import smtplib
 conn = pymysql.connect(host="localhost", user="root",
                        passwd="root", db="QWeixin", charset="utf8")
-cursor = conn.cursor()
 def insertData(tablename, data):
     key = []
     val = []
@@ -65,7 +64,7 @@ def dict_2_str_and(dictin):
 def safe(s):
 	return s
 
-def send(m,c):
+def send(m,title,c):
 	from_addr = 'xmxj@cj.it592.com'
 	password = '07070913zyll'
 	to_addr = m
@@ -74,7 +73,7 @@ def send(m,c):
 	msg = MIMEText(c, 'plain', 'utf-8')
 	msg['From'] = from_addr
 	msg['To'] = to_addr
-	msg['Subject'] = Header(u'虾米小匠成绩更新通知', 'utf-8').encode()
+	msg['Subject'] = Header(title, 'utf-8').encode()
 
 	server = smtplib.SMTP(smtp_server, 25)
 	server.set_debuglevel(1)
@@ -103,7 +102,10 @@ def main():
 	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'begin\n')
 	output.close()
 	userdata = getUser()
+	global cursor
 	for x in userdata:
+		cursor = conn.cursor()
+		time.sleep(1)
 		oucjw = OucJw(x[1],x[2])
 		t = (oucjw.login())
 		if(t['status'] == '200'):
@@ -117,14 +119,17 @@ def main():
 			for (k,v) in data.items():
 				temp = {'username_id':x[0],'coursename':v['coursename'],'coursetype':v['coursetype'],'year':v['year'],'jd':v['jd'],'score':v['score'],'xf':v['xf']}
 				sql = insertData('AddonOucJw_studentscore',temp)
-				content += v['coursename'] + v['score'] + ';\n'
+				content += v['coursename'] + ' '+ v['score'] + ';\n'
 				try:
 					cursor.execute(sql)
 					conn.commit()
 				except Exception as e:
 					print(e)
 			if len(data):
-				send(x[3],content)
+				content += '详情请关注虾米小匠\n'
+				title = x[1] + ',你有%s门成绩更新啦'
+				title = title % (len(data))
+				#send(x[3],title,content)
 	output = open('oucjw.txt', 'a+')
 	output.write(time.strftime( ISOTIMEFORMAT, time.localtime())+'end\n')
 	output.close()
